@@ -1,19 +1,51 @@
-import PyPDF2
-import tabula as tb
-import re
+#import PyPDF2
+# import tabula as tb
+#import re
+
+# pdftotext
+ 
+import pdftotext
 
 transcript_dir = "transcript-scrapper/pdf-files/"
 
-left_column = [62.865, 47.025, 518.265, 351.945]
-right_column = [62.865, 855.521, 518.265, 653.895]
+# Load your PDF
+with open(transcript_dir + 'transcripts09.pdf', "rb") as f:
+    pdf = pdftotext.PDF(f)
 
-full_area = [0,792,612,0]
+# How many pages?
+# print(len(pdf))
 
-left_pdf = tb.read_pdf(transcript_dir + 'transcripts09.pdf', area = left_column, 
-                       guess = False, stream = True,
-                       pages = 1)
+# Iterate over all the pages
+# for page in pdf:
+#     print(page)
+
+# Read some individual pages
+
+#print(repr(" ".join(pdf[0].split())))
+print(pdf[0])
+# print(pdf[1])
+
+# Read all the text into one string
+#print("".join(pdf[0]))
+
+# ---------------------------------
+
+
+
+# transcript_dir = "transcript-scrapper/pdf-files/"
+
+# left_column = [62.865, 47.025, 518.265, 351.945]
+# right_column = [62.865, 855.521, 518.265, 653.895]
+
+# full_area = [0,792,612,0]
+
+# left_pdf = tb.read_pdf(transcript_dir + 'transcripts17.pdf', area = right_column, 
+#                       guess = False, stream = True,
+#                       pages = 1)
                        
-print(left_pdf)
+# print(left_pdf)
+
+# -----------------------------------------------
 
 
 # # pdf file object
