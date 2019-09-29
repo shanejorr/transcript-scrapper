@@ -3,7 +3,6 @@ This script imports all the pdf transcripts from an Amazon s3 bucket.
 """
 
 import boto3
-import os
 
 bucket_name = 'elon-transcripts'
 
