@@ -21,6 +21,7 @@ with open(transcript_dir + 'transcripts09.pdf', "rb") as f:
     left_semester = re.findall(r'\n +([A-Z][a-z]+ \d{4})', pdf[0])
     #\nLAW +(\d+) +(\w+)  (\d)
     left_grades = re.findall(r'\n +([A-Z][a-z]+ \d{4}).*\nLAW +(\d+) +([\w| ]+)  +?(\d)[.]\d\d +(.{1,2})', pdf[0])
+    #left_grades = re.findall(r'\nLAW +(\d+) +([\w| ]+)  +?(\d)[.]\d\d +(.{1,2})', pdf[0])
 
     print(left_grades)
 
