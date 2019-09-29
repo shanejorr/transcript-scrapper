@@ -5,12 +5,24 @@
 # pdftotext
  
 import pdftotext
+import re
 
-transcript_dir = "transcript-scrapper/pdf-files/"
+transcript_dir = "pdf-files/"
+# 'Page: \d of \d\n (.+?), (\w+)?'
+
+# regular expression to extract semester on left hand side
 
 # Load your PDF
 with open(transcript_dir + 'transcripts09.pdf', "rb") as f:
     pdf = pdftotext.PDF(f)
+
+    name = re.search(r'Page: +\d +of +\d\n (.+?), (\w+)?', pdf[0]).group(0)
+
+    left_semester = re.findall(r'\n +([A-Z][a-z]+ \d{4})', pdf[0])
+    #\nLAW +(\d+) +(\w+)  (\d)
+    left_grades = re.findall(r'\n +([A-Z][a-z]+ \d{4}).*\nLAW +(\d+) +([\w| ]+)  +?(\d)[.]\d\d +(.{1,2})', pdf[0])
+
+    print(left_grades)
 
 # How many pages?
 # print(len(pdf))
@@ -21,8 +33,7 @@ with open(transcript_dir + 'transcripts09.pdf', "rb") as f:
 
 # Read some individual pages
 
-#print(repr(" ".join(pdf[0].split())))
-print(pdf[0])
+#print(repr(pdf[0]))
 # print(pdf[1])
 
 # Read all the text into one string

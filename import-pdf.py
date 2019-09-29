@@ -19,6 +19,6 @@ bucket_objects = [x['Key'] for x in bucket_files]
 for obj_name in bucket_objects:
     # create file name to save on local computer that is combination of 
     # full file path and objec name
-    file = "transcript-scrapper/pdf-files/" + obj_name
+    file = "pdf-files/" + obj_name
     # download file
     s3.download_file(bucket_name, obj_name, file)
