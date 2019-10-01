@@ -7,7 +7,7 @@
 import pdftotext
 import re
 
-transcript_dir = "pdf-files/"
+transcript_dir = "transcript-scrapper/pdf-files/"
 # 'Page: \d of \d\n (.+?), (\w+)?'
 
 # regular expression to extract semester on left hand side
@@ -19,11 +19,12 @@ with open(transcript_dir + 'transcripts09.pdf', "rb") as f:
     name = re.search(r'Page: +\d +of +\d\n (.+?), (\w+)?', pdf[0]).group(0)
 
     left_semester = re.findall(r'\n +([A-Z][a-z]+ \d{4})', pdf[0])
-    #\nLAW +(\d+) +(\w+)  (\d)
-    left_grades = re.findall(r'\n +([A-Z][a-z]+ \d{4}).*\nLAW +(\d+) +([\w| ]+)  +?(\d)[.]\d\d +(.{1,2})', pdf[0])
-    #left_grades = re.findall(r'\nLAW +(\d+) +([\w| ]+)  +?(\d)[.]\d\d +(.{1,2})', pdf[0])
-
-    print(left_grades)
+    left_grades = re.findall(r'\nLAW +(\d+) +([\w| ]+)  +?(\d)[.]\d\d +(.{1,2})', pdf[0])
+    left_new_lines = re.findall(r'\nLAW|\n +Term', pdf[0])
+    right_new_lines = re.findall(r'\nLAW|\n +Term', pdf[0])
+    
+    
+    print(left_new_lines)
 
 # How many pages?
 # print(len(pdf))
