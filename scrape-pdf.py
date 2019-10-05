@@ -47,10 +47,10 @@ with open(transcript_dir + 'transcripts09.pdf', "rb") as f:
     name = re.search(r'Page: +\d +of +\d\n (.+?), (\w+)?', pdf[0])
 
     left_semester = re.findall(r'\n +([A-Z][a-z]+ \d{4})',pdf[0])
-    left_grades = re.findall(r'\nLAW +(\d+) +([\w| ]+)  +?(\d)[.]\d\d +(.{1,2})', pdf[0])
+    left_grades = re.findall(r'\nLAW +(\d+) +(.+?)  +?(\d)[.]\d\d +(.{1,2})', pdf[0])
     left_new_lines = re.findall(r'\nLAW|\n +Term', pdf[0])
     right_new_lines = re.findall(r'\nLAW|\n +Term', pdf[0])
-    a = re.findall(r'\nLAW +(\d+)', pdf[0])
+    #a = re.findall(r'\nLAW +(\d+) +([\w| ]+)  +?(\d)', pdf[0])
     
     semesters = left_classes_per_semester(left_new_lines, left_semester)
     
@@ -58,8 +58,8 @@ with open(transcript_dir + 'transcripts09.pdf', "rb") as f:
     
     df['name_last'] = name.group(1)
     df['name_first'] = name.group(2)
-    #df['semester'] = semesters
+    df['semester'] = semesters
     
-    print(a)
+    print(df)
     
     #print(semesters)
