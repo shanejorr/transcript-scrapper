@@ -6,9 +6,37 @@
  
 import pdftotext
 import re
+import pandas as pd
+
+def left_classes_per_semester(left_new_lines, left_semester):
+    """
+    This function stores a string of the semeters name, with the number of times
+    the string is stored equaling the number of classes the student took in the
+    semester.  The output will then be added to a datafram column to signify
+    the semester of the class.
+    """
+    
+    i = 0  # initialize iterator for all lines
+    semesters = [] # initialize list to store strins of semesters
+    # initialize dictionary with key of semester name / value of number of classes
+    semester_counts = {} 
+    
+    # iterate through each semester
+    for semester in left_semester:
+        # iterate through each line and check to see if the line has a class
+        # if the line has a class, add the semester name to the semester list
+        # and move to the next line
+        while re.match(r"\nLAW", left_new_lines[i]):
+            semesters.append(semester)
+            i += 1
+        # we're at this point if the line did not have a class
+        # we need to add a number to the line iterator so it skips the line without
+        # a class
+        i += 1
+        
+    return semesters
 
 transcript_dir = "transcript-scrapper/pdf-files/"
-# 'Page: \d of \d\n (.+?), (\w+)?'
 
 # regular expression to extract semester on left hand side
 
@@ -16,73 +44,22 @@ transcript_dir = "transcript-scrapper/pdf-files/"
 with open(transcript_dir + 'transcripts09.pdf', "rb") as f:
     pdf = pdftotext.PDF(f)
 
-    name = re.search(r'Page: +\d +of +\d\n (.+?), (\w+)?', pdf[0]).group(0)
+    name = re.search(r'Page: +\d +of +\d\n (.+?), (\w+)?', pdf[0])
 
-    left_semester = re.findall(r'\n +([A-Z][a-z]+ \d{4})', pdf[0])
+    left_semester = re.findall(r'\n +([A-Z][a-z]+ \d{4})',pdf[0])
     left_grades = re.findall(r'\nLAW +(\d+) +([\w| ]+)  +?(\d)[.]\d\d +(.{1,2})', pdf[0])
     left_new_lines = re.findall(r'\nLAW|\n +Term', pdf[0])
     right_new_lines = re.findall(r'\nLAW|\n +Term', pdf[0])
+    a = re.findall(r'\nLAW +(\d+)', pdf[0])
     
+    semesters = left_classes_per_semester(left_new_lines, left_semester)
     
-    print(left_new_lines)
-
-# How many pages?
-# print(len(pdf))
-
-# Iterate over all the pages
-# for page in pdf:
-#     print(page)
-
-# Read some individual pages
-
-#print(repr(pdf[0]))
-# print(pdf[1])
-
-# Read all the text into one string
-#print("".join(pdf[0]))
-
-# ---------------------------------
-
-
-
-# transcript_dir = "transcript-scrapper/pdf-files/"
-
-# left_column = [62.865, 47.025, 518.265, 351.945]
-# right_column = [62.865, 855.521, 518.265, 653.895]
-
-# full_area = [0,792,612,0]
-
-# left_pdf = tb.read_pdf(transcript_dir + 'transcripts17.pdf', area = right_column, 
-#                       guess = False, stream = True,
-#                       pages = 1)
-                       
-# print(left_pdf)
-
-# -----------------------------------------------
-
-
-# # pdf file object
-# pdfFileObj = open(transcript_dir + 'transcripts09.pdf', 'rb')
-
-# # pdf reader object
-# pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
-# # number of pages in pdf
-# #print(pdfReader.numPages)
-
-# # a page object
-# pageObj = pdfReader.getPage(19)
-
-# # extracting text from page.
-# # this will print the text you can also save that into String
-
-# text = pageObj.extractText()
-
-# # remove excess whitespace (only keep one sapce)
-# text = " ".join(text.split())
-
-# # extract name
-# name = re.search(r'Page: \d of \d (.+?), (\w+)?', text)
-
-# #print(text)
-# print(name.group(1))
-# print(name.group(2))
+    df = pd.DataFrame(left_grades, columns=['class_num', 'class_name', 'credits', 'grade'])
+    
+    df['name_last'] = name.group(1)
+    df['name_first'] = name.group(2)
+    #df['semester'] = semesters
+    
+    print(a)
+    
+    #print(semesters)
