@@ -1,4 +1,5 @@
 import re
+from PyPDF2 import PdfFileWriter,PdfFileReader
 
 def left_classes_per_semester(left_new_lines, left_semester):
     """
@@ -27,3 +28,30 @@ def left_classes_per_semester(left_new_lines, left_semester):
         i += 1
         
     return semesters
+    
+def cut_pdf(file_input, crop_lowerLeft, crop_lowerRight, page_num, file_output):
+    """
+    This function cuts the transcripts in the middle.
+    
+    File Input: file name of transcripts
+    crop_lowerLeft: lower left coordinate in points of new boundary
+    crop_lowerLeft: lower right coordinate in points of new boundary
+    page_num: page number within pdf
+    file_output: pdf file name of output file
+    """
+    
+    # read in pdf file
+    writer = PdfFileWriter()
+    pdf_file = PdfFileReader(open(file_input,"rb"))
+    page = pdf_file.getPage(page_num)
+    
+    # crop file
+    page.cropBox.setLowerLeft(crop_lowerLeft)
+    page.cropBox.setUpperRight(crop_lowerRight)
+    
+    # add cropped file to writer object
+    writer.addPage(page)
+    
+    # write out file
+    with open(file_output, "wb") as out_f:
+        writer.write(out_f)
