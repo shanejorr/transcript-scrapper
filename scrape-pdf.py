@@ -1,64 +1,26 @@
-from PyPDF2 import PdfFileWriter,PdfFileReader
-import pdftotext
 import re
 import pandas as pd
 import custom_functions as cf
 
 transcript_dir = "transcript-scrapper/pdf-files/"
-"""
-writer = PdfFileWriter()
-pdf_file = PdfFileReader(open(transcript_dir + 'transcripts09.pdf',"rb"))
-page_left = pdf_file.getPage(0)
+cropped_dir = "transcript-scrapper/cropped_pdf/"
 
-print(page_left.cropBox.getLowerLeft())
-print(page_left.cropBox.getLowerRight())
-print(page_left.cropBox.getUpperLeft())
-print(page_left.cropBox.getUpperRight())
+# split pdf into right and left sectins and output results
+cf.cut_pdf(transcript_dir + 'transcripts09.pdf', (0, 0), (612, 350), 
+           0, cropped_dir + "outR.pdf")   
+cf.cut_pdf(transcript_dir + 'transcripts09.pdf', (0, 350), (612, 792), 
+           0, cropped_dir + "outL.pdf")    
 
+# read in right and left sections, extract text, and form into a dataframe
+dfR = cf.extract_grades(cropped_dir + "outR.pdf", True)
+dfL = cf.extract_grades(cropped_dir + "outL.pdf", False)
 
+# combine right and left dataframes
+df = pd.concat([dfR, dfL], axis=0).reset_index(drop=True)
 
-# left side of pdf
-page_left.cropBox.setLowerLeft((0, 0))
-page_left.cropBox.setUpperRight((612, 350))
-writer.addPage(page_left)
+# pdfs from the left side will not have names, there value will be missing in the df
+# forward fill missing name values
+df['name'] = df['name'].fillna(method='ffill')
 
+print(df)
 
-#page_right.cropBox.setLowerLeft((0, 350))
-#page_right.cropBox.setUpperRight((612, 792))
-#writer.addPage(page_right)
-
-with open("out.pdf", "wb") as out_f:
-    writer.write(out_f)
-"""   
-
-cf.cut_pdf(transcript_dir + 'transcripts09.pdf', (0, 0), (612, 350), 0, "outL.pdf")   
-cf.cut_pdf(transcript_dir + 'transcripts09.pdf', (0, 350), (612, 792), 0, "outR.pdf")     
-
-
-# regular expression to extract semester on left hand side
-"""
-# Load your PDF
-with open(transcript_dir + 'transcripts09.pdf', "rb") as f:
-    pdf = pdftotext.PDF(f)
-
-    name = re.search(r'Page: +\d +of +\d\n (.+?, \w+)?', pdf[0])
-
-    left_semester = re.findall(r'\n +([A-Z][a-z]+ \d{4})',pdf[0])
-    left_grades = re.findall(r'\nLAW +(\d+) +(.+?)  +?(\d)[.]\d\d +(.{1,2})', pdf[0])
-    left_new_lines = re.findall(r'\nLAW|\n +Term', pdf[0])
-    left_semesters = cf.left_classes_per_semester(left_new_lines, left_semester)
-    
-    left_df = pd.DataFrame(left_grades, columns=['class_num', 'class_name', 'credits', 'grade'])
-    
-    # name will be separated into first and last post-processing
-    left_df['name'] = name.group(1)
-    
-    # semesters will be separated into semster and year post processing
-    left_df['semester'] = left_semesters
-    
-    print(left_df)
-
-    #right_new_lines = re.findall(r'\nLAW|\n +Term', pdf[0])
-    #right_grades = re.findall(r' LAW +(\d+) +(.+?)  +?(\d)[.]\d\d +(.{1,2})\n', pdf[0])
-    #right_semester = re.findall(r'\w +([A-Z][a-z]+ \d{4})\n',pdf[0])
-"""
