@@ -1,1 +1,4 @@
 pdf-files
+cropped_pdf
+*.pdf
+*.csv
