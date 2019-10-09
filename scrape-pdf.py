@@ -13,7 +13,7 @@ transcript_files = glob.glob(transcript_dir + "*.pdf")
 
 #with open(transcript_files[2], "rb") as f:
 #    pdf = pdftotext.PDF(f)
-#cf.cut_pdf(transcript_files[2], (0, 0), (612, 350), 64, cropped_dir + "outL.pdf")
+#cf.cut_pdf(transcript_files[0], (0, 0), (612, 350), 17, cropped_dir + "outL.pdf")
 #sem = cf.extract_grades(cropped_dir + "outL.pdf", True)
 
 #print(sem)

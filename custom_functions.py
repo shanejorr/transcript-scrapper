@@ -77,8 +77,8 @@ def extract_grades(input_file, left_side):
     
         semester = re.findall(r'\n +([A-Z][a-z]+ \d{4}|Transfer Work)',pdf[0])
         grades = re.findall(r'\n {0,1}LAW +(\w{3}) +' # class number
-                            r'(.+?)  +?' # class name
-                            r'(\d)[.]\d\d' # number of credit hours
+                            r'(.+?) +?' # class name
+                            r'(\d{1,2})[.]\d\d' # number of credit hours
                             r'(.*)', # class letter grade 
                             pdf[0])
         new_lines = re.findall(r'\n {0,1}LAW|\n +Term|\n *---', pdf[0])
@@ -104,7 +104,7 @@ def extract_grades(input_file, left_side):
         # semesters will be separated into semster and year post processing
         df['semester'] = semesters
         
-        # the right side includes the name, so if we are scraping the right side
+        # the left side includes the name, so if we are scraping the right side
         # pull the name and include it in the dataframe
         if left_side:
             
