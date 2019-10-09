@@ -75,7 +75,7 @@ def extract_grades(input_file, left_side):
         
         pdf = pdftotext.PDF(f)
     
-        semester = re.findall(r'\n +([A-Z][a-z]+ \d{4}|Transfer Work)',pdf[0])
+        semester = re.findall(r'\n +([A-Z][a-z]+ \d{4}|Transfer Work|Summer .{1,2} \d{4})',pdf[0])
         grades = re.findall(r'\n {0,1}LAW +(\w{3}) +' # class number
                             r'(.+?) +?' # class name
                             r'(\d{1,2})[.]\d\d' # number of credit hours
