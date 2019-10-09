@@ -59,12 +59,12 @@ def cut_pdf(file_input, crop_lowerLeft, crop_lowerRight, page_num, file_output):
     with open(file_output, "wb") as out_f:
         writer.write(out_f)
         
-def extract_grades(input_file, right_side):
+def extract_grades(input_file, left_side):
     
     """
     Extract the grades from a single side of a pdf page
     input_file: pdf file to input (side of a full pdf file)
-    right_side: boolean, whether it is the right side of the file
+    left_side: boolean, whether it is the left side of the file, which contains the name;
                 if True, name will be added to data frame
                 
     return: dataframe of grades
@@ -75,8 +75,12 @@ def extract_grades(input_file, right_side):
         
         pdf = pdftotext.PDF(f)
     
-        semester = re.findall(r'\n +([A-Z][a-z]+ \d{4})',pdf[0])
-        grades = re.findall(r'\n {0,1}LAW +(\d+) +(.+?)  +?(\d)[.]\d\d +(.{1,2})', pdf[0])
+        semester = re.findall(r'\n +([A-Z][a-z]+ \d{4}|Transfer Work)',pdf[0])
+        grades = re.findall(r'\n {0,1}LAW +(\w{3}) +' # class number
+                            r'(.+?)  +?' # class name
+                            r'(\d)[.]\d\d' # number of credit hours
+                            r'(.*)', # class letter grade 
+                            pdf[0])
         new_lines = re.findall(r'\n {0,1}LAW|\n +Term|\n *---', pdf[0])
         semesters = left_classes_per_semester(new_lines, semester)
         
@@ -102,7 +106,7 @@ def extract_grades(input_file, right_side):
         
         # the right side includes the name, so if we are scraping the right side
         # pull the name and include it in the dataframe
-        if right_side:
+        if left_side:
             
             name = re.search(r' \d{4}\n +(.+?, \w+)', pdf[0])
  
@@ -115,13 +119,13 @@ def extract_whole_page(input_file, page_num, cropped_dir):
     
     # split pdf into right and left sectins and output results
     cut_pdf(input_file, (0, 0), (612, 350), 
-            page_num, cropped_dir + "outR.pdf")   
+            page_num, cropped_dir + "outL.pdf")   
     cut_pdf(input_file, (0, 350), (612, 792), 
-            page_num, cropped_dir + "outL.pdf")    
+            page_num, cropped_dir + "outR.pdf")    
     
     # read in right and left sections, extract text, and form into a dataframe
-    dfR = extract_grades(cropped_dir + "outR.pdf", True)
-    dfL = extract_grades(cropped_dir + "outL.pdf", False)
+    dfR = extract_grades(cropped_dir + "outL.pdf", True)
+    dfL = extract_grades(cropped_dir + "outR.pdf", False)
     
     # combine right and left dataframes
     df = pd.concat([dfR, dfL], axis=0).reset_index(drop=True)
