@@ -11,18 +11,6 @@ scrapper_dir = "transcript-scrapper/scrapper-output/"
 # keep transcript files to iterate through
 transcript_files = glob.glob(transcript_dir + "*.pdf")
 
-#with open(transcript_files[2], "rb") as f:
-#    pdf = pdftotext.PDF(f)
-#cf.cut_pdf(transcript_files[0], (0, 0), (0, 350), 17, cropped_dir + "outL.pdf")
-#sem = cf.extract_grades(cropped_dir + "outL.pdf", False)
-#single_page = cf.extract_whole_page(transcript_files[0], 17, cropped_dir)
-#print(single_page)
-
-#with open(transcript_dir + "outL.pdf", "rb") as f:
-#    pdf = pdftotext.PDF(f)
-#    print(repr(pdf[0]))
-
-
 # iterate over each yearly transcript file
 for file in transcript_files:
     
@@ -59,4 +47,4 @@ for file in transcript_files:
     # write out dataframe
     scrapper_file = scrapper_dir + "scrapper_output" + year + ".csv"
     
-    multi_page.to_csv(scrapper_file)
+    multi_page.to_csv(scrapper_file, index = False)
