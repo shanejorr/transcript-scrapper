@@ -14,4 +14,9 @@ list_df = [pd.read_csv(f) for f in scrapped_output]
 # combine into one dataset
 df = pd.concat(list_df, ignore_index=True)
 
+# break up name into first and last name
+df[['name_last', 'name_first']] = df['name'].str.split(', ', expand=True)
+df.drop("name", axis=1, inplace=True)
+
 print(df.head())
+
